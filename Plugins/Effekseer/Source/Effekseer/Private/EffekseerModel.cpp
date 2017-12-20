@@ -54,9 +54,9 @@ FEffekseerModelMesh UEffekseerModel::GetMesh()
 	for (auto i = 0; i < p->GetFaceCount(); i++)
 	{
 		auto f = p->GetFaces()[i];
-		mesh.Indexes.Add(f.Indexes[0]);
-		mesh.Indexes.Add(f.Indexes[1]);
 		mesh.Indexes.Add(f.Indexes[2]);
+		mesh.Indexes.Add(f.Indexes[1]);
+		mesh.Indexes.Add(f.Indexes[0]);
 	}
 
 	return mesh;

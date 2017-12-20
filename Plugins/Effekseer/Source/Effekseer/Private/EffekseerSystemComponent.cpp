@@ -276,7 +276,7 @@ public:
 
 UEffekseerSystemComponent::UEffekseerSystemComponent()
 {
-	bWantsBeginPlay = true;
+	//bWantsBeginPlay = true;
 	bTickInEditor = true;
 	PrimaryComponentTick.bCanEverTick = true;
 	currentUpdateData = new EffekseerUpdateData();

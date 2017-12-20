@@ -42,7 +42,7 @@ namespace EffekseerRendererUE4
 
 	inline void TransformVertexes(Vertex* vertexes, int32_t count, const ::Effekseer::Matrix43& mat)
 	{
-#if 1
+#if defined(__x86_64__)||defined(_M_X64)
 		__m128 r0 = _mm_loadu_ps(mat.Value[0]);
 		__m128 r1 = _mm_loadu_ps(mat.Value[1]);
 		__m128 r2 = _mm_loadu_ps(mat.Value[2]);
@@ -118,7 +118,7 @@ namespace EffekseerRendererUE4
 
 	inline void TransformVertexes(VertexDistortion* vertexes, int32_t count, const ::Effekseer::Matrix43& mat)
 	{
-#if 1
+#if defined(__x86_64__)||defined(_M_X64)
 		__m128 r0 = _mm_loadu_ps(mat.Value[0]);
 		__m128 r1 = _mm_loadu_ps(mat.Value[1]);
 		__m128 r2 = _mm_loadu_ps(mat.Value[2]);

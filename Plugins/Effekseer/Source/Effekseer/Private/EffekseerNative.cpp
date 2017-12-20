@@ -14,11 +14,14 @@
 #include <queue>
 #include <fstream>
 #include <memory>
-#ifdef _WIN32
+#if PLATFORM_WINDOWS
 #include "AllowWindowsPlatformTypes.h"  // UE4
 #include <winsock2.h>
 #include "HideWindowsPlatformTypes.h"  // UE4
 #pragma comment( lib, "ws2_32.lib" )
+#elif PLATFORM_XBOXONE
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -1326,15 +1329,15 @@ namespace Culling3D
 		return userData;
 	}
 
-	void ObjectInternal::SetUserData(void* userData)
+	void ObjectInternal::SetUserData(void* inUserData)
 	{
-		this->userData = userData;
+		this->userData = inUserData;
 	}
 
 
-	void ObjectInternal::SetWorld(World* world)
+	void ObjectInternal::SetWorld(World* inWorld)
 	{
-		this->world = world;
+		this->world = inWorld;
 	}
 }
 
@@ -1784,11 +1787,11 @@ namespace Culling3D
 					float t = -FLT_MAX;
 					float t_max = FLT_MAX;
 
-					for (int i = 0; i < 3; ++i)
+					for (int index = 0; index < 3; ++index)
 					{
-						if (std::abs(d[i]) < FLT_EPSILON)
+						if (std::abs(d[index]) < FLT_EPSILON)
 						{
-							if (p[i] < min[i] || p[i] > max[i])
+							if (p[index] < min[index] || p[index] > max[index])
 							{
 								// 交差していない
 								continue;
@@ -1798,9 +1801,9 @@ namespace Culling3D
 						{
 							// スラブとの距離を算出
 							// t1が近スラブ、t2が遠スラブとの距離
-							float odd = 1.0f / d[i];
-							float t1 = (min[i] - p[i]) * odd;
-							float t2 = (max[i] - p[i]) * odd;
+							float odd = 1.0f / d[index];
+							float t1 = (min[index] - p[index]) * odd;
+							float t2 = (max[index] - p[index]) * odd;
 							if (t1 > t2)
 							{
 								float tmp = t1; t1 = t2; t2 = tmp;
@@ -1841,7 +1844,7 @@ namespace Culling3D
 	{
 		objs.clear();
 	
-#if _MSC_VER == 1700
+#if 0//_MSC_VER == 1700
 		if (_finite(cameraProjMat.Values[2][2]) &&
 			cameraProjMat.Values[0][0] != 0.0f &&
 			cameraProjMat.Values[1][1] != 0.0f)
@@ -4372,7 +4375,7 @@ bool Thread::Wait() const
 	return true;
 }
 
-#elif defined(_PSVITA) || defined(_PS4) || defined(_SWITCH) || defined(_XBOXONE)
+#elif defined(_PSVITA) || defined(_PS4) || defined(_SWITCH) || defined(_XBOXONE) || PLATFORM_SWITCH
 	//-----------------------------------------------------------------------------------
 	//
 	//-----------------------------------------------------------------------------------
@@ -7723,11 +7726,11 @@ private:
 	// マネージャ
 	Manager*	m_pManager;
 
-	// パラメーター
-	EffectNodeImplemented* m_pEffectNode;
-
 	// グローバル
 	InstanceGlobal*	m_pGlobal;
+
+	// パラメーター
+	EffectNodeImplemented* m_pEffectNode;
 
 	// 子のコンテナ
 	InstanceContainer**	m_Children;
@@ -14140,16 +14143,16 @@ Instance::Instance(Manager* pManager, EffectNode* pEffectNode, InstanceContainer
 
 	for( int i = 0; i < m_pEffectNode->GetChildrenCount(); i++ )
 	{
-		InstanceContainer* pContainer = m_pContainer->GetChild( i );
+		InstanceContainer* pTmpContainer = m_pContainer->GetChild( i );
 
 		if( group != NULL )
 		{
-			group->NextUsedByInstance = pContainer->CreateGroup();
+			group->NextUsedByInstance = pTmpContainer->CreateGroup();
 			group = group->NextUsedByInstance;
 		}
 		else
 		{
-			group = pContainer->CreateGroup();
+			group = pTmpContainer->CreateGroup();
 			m_headGroups = group;
 		}
 	}
@@ -15311,7 +15314,7 @@ void Instance::ModifyMatrixFromLocationAbs( float deltaFrame )
 	}
 	else if( m_pEffectNode->LocationAbs.type == LocationAbsParameter::AttractiveForce )
 	{
-		InstanceGlobal* instanceGlobal = m_pContainer->GetRootInstance();
+		//InstanceGlobal* instanceGlobal = m_pContainer->GetRootInstance();
 
 		float force = m_pEffectNode->LocationAbs.attractiveForce.force;
 		float control = m_pEffectNode->LocationAbs.attractiveForce.control;
