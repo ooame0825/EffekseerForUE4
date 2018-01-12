@@ -11,6 +11,8 @@
 #include "Runtime/Core/Public/Math/Color.h"
 #include "Runtime/Engine/Public/MaterialShared.h"
 
+#include "EffekseerNative.h"
+
 namespace EffekseerRendererUE4
 {
 	class FDistortionMaterialRenderProxy : public FMaterialRenderProxy
@@ -168,6 +170,7 @@ namespace EffekseerRendererUE4
 		m_renderer->GetRenderState()->Update(false);
 		m_renderer->SetIsLighting(parameter.Lighting);
 		m_renderer->SetIsDistorting(parameter.Distortion);
+		m_renderer->SetIsTwoSided(((parameter.Culling == Effekseer::CullingType::Double) ? true : false));
 		m_renderer->SetDistortionIntensity(parameter.DistortionIntensity);
 
 		Effekseer::TextureData* textures[1];
@@ -186,6 +189,7 @@ namespace EffekseerRendererUE4
 		m_renderer->DrawModel(model, m_matrixes, m_uv, m_colors);
 
 		m_renderer->GetRenderState()->Pop();
+		m_renderer->SetIsTwoSided(true);
 	}
 
 	RendererImplemented* RendererImplemented::Create()
@@ -615,6 +619,12 @@ namespace EffekseerRendererUE4
 		UMaterialInstanceDynamic* mat = FindMaterial();
 		if (mat == nullptr) return;
 
+		//mat->BasePropertyOverrides.bOverride_TwoSided = true;
+		//mat->BasePropertyOverrides.TwoSided = 1;
+		//mat->UpdateOverridableBaseProperties();
+
+		bool a = mat->Parent->IsTwoSided();
+
 		if (renderData->LODResources.Num() == 0) return;
 		const auto& lodResource = renderData->LODResources[0];
 
@@ -695,6 +705,7 @@ namespace EffekseerRendererUE4
 		m.IsDepthTestDisabled = !m_renderState->GetActiveState().DepthTest;
 		m.IsLighting = m_isLighting;
 		m.IsDistorted = m_isDistorting;
+		m.IsTwoSided = m_isTwoSided;
 
 		UMaterialInstanceDynamic* mat = nullptr;
 

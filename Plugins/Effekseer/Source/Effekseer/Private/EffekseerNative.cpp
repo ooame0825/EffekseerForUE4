@@ -9437,11 +9437,13 @@ EffectModelParameter EffectNodeImplemented::GetEffectModelParameter()
 {
 	EffectModelParameter param;
 	param.Lighting = false;
+	param.TwoSided = true;
 
 	if (GetType() == EFFECT_NODE_TYPE_MODEL)
 	{
 		auto t = (EffectNodeModel*)this;
 		param.Lighting = t->Lighting;
+		param.TwoSided = ((t->Culling == CullingType::Double) ? true : false);
 	}
 
 	return param;

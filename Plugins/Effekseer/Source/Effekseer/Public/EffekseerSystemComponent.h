@@ -139,6 +139,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Material)
 	UMaterialInstanceConstant* DistortionAdditive_DD_Material = nullptr;
 
+	// Front Face
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Material)
+	UMaterialInstanceConstant* Translucent_FF_Material = nullptr;
+
 	std::map<EffekseerMaterial, UMaterialInstanceDynamic*> NMaterials;
 
 	UPROPERTY(Transient)

@@ -306,6 +306,7 @@ void UEffekseerEffect::LoadEffect(const uint8_t* data, int32_t size, const TCHAR
 			mat->AlphaBlend = (EEffekseerAlphaBlendType)param.AlphaBlend;
 			mat->IsLighting = modelParam.Lighting;
 			mat->IsDistorted = param.Distortion;
+			mat->IsTwoSided = modelParam.TwoSided;
 
 			this->Materials.Add(mat);
 

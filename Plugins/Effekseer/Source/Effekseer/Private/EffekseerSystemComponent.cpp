@@ -445,7 +445,7 @@ FEffekseerHandle UEffekseerSystemComponent::Play(UEffekseerEffect* effect, FVect
 	position -= this->RelativeLocation;
 
 	// 動的にマテリアルを生成する。
-	UMaterialInstanceConstant* _mats[16];
+	UMaterialInstanceConstant* _mats[17];
 	TMap<UTexture2D*, UMaterialInstanceDynamic*>* _matss[8];
 
 	_mats[0] = OpaqueMaterial;
@@ -465,6 +465,8 @@ FEffekseerHandle UEffekseerSystemComponent::Play(UEffekseerEffect* effect, FVect
 	_mats[5 + 8] = LightingMaterial;
 	_mats[6 + 8] = DistortionTranslucent_DD_Material;
 	_mats[7 + 8] = DistortionAdditive_DD_Material;
+
+	_mats[0 + 16] = Translucent_FF_Material;
 
 	_matss[0] = &OpaqueDynamicMaterials;
 	_matss[1] = &TranslucentDynamicMaterials;
@@ -513,6 +515,7 @@ FEffekseerHandle UEffekseerSystemComponent::Play(UEffekseerEffect* effect, FVect
 		if (blendInd == 2 && m->IsDistorted) blendInd = 7;
 
 		if (m->IsDepthTestDisabled) blendInd += 8;
+		if (!m->IsTwoSided) blendInd = 16;
 		auto mat = _mats[blendInd];
 
 		if (mat != nullptr)
@@ -527,6 +530,7 @@ FEffekseerHandle UEffekseerSystemComponent::Play(UEffekseerEffect* effect, FVect
 			mkey.IsDepthTestDisabled = m->IsDepthTestDisabled;
 			mkey.IsLighting = m->IsLighting;
 			mkey.IsDistorted = m->IsDistorted;
+			mkey.IsTwoSided = m->IsTwoSided;
 			NMaterials[mkey] = dynamicMaterial;
 		}
 	}

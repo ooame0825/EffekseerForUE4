@@ -1969,11 +1969,11 @@ protected:
 			parameter.Billboard == ::Effekseer::BillboardType::YAxisFixed)
 		{
 			const ::Effekseer::Matrix43& mat = instanceParameter.SRTMatrix43;
-			::Effekseer::Vector3D s;
+			::Effekseer::Vector3D s1;
 			::Effekseer::Matrix43 r;
 			::Effekseer::Vector3D t;
 
-			mat.GetSRT( s, r, t );
+			mat.GetSRT(s1, r, t );
 
 			::Effekseer::Vector3D F;
 			::Effekseer::Vector3D R;
@@ -2050,12 +2050,12 @@ protected:
 			mat_rot.Value[3][1] = t.Y;
 			mat_rot.Value[3][2] = t.Z;
 
-			ApplyDepthOffset(mat_rot, camera, s, parameter.DepthOffset, parameter.IsDepthOffsetScaledWithCamera, parameter.IsDepthOffsetScaledWithParticleScale);
+			ApplyDepthOffset(mat_rot, camera, s1, parameter.DepthOffset, parameter.IsDepthOffsetScaledWithCamera, parameter.IsDepthOffsetScaledWithParticleScale);
 			
 			if( m_instanceCount > 1 )
 			{
 				::Effekseer::Matrix43 mat_scale;
-				mat_scale.Scaling( s.X, s.Y, s.Z );
+				mat_scale.Scaling( s1.X, s1.Y, s1.Z );
 				::Effekseer::Matrix43::Multiple( mat_rot, mat_scale, mat_rot );
 
 				TransformVertexes( verteies, vertexCount, mat_rot );
@@ -2063,7 +2063,7 @@ protected:
 			else
 			{
 				::Effekseer::Matrix43 mat_scale;
-				mat_scale.Scaling( s.X, s.Y, s.Z );
+				mat_scale.Scaling( s1.X, s1.Y, s1.Z );
 				::Effekseer::Matrix43::Multiple( mat_rot, mat_scale, mat_rot );
 
 				for( int32_t i = 0; i < 4; i++ )

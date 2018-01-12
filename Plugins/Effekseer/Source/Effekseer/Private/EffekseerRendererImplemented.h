@@ -272,6 +272,7 @@ namespace EffekseerRendererUE4
 		bool					m_isDistorting = false;
 		float					m_distortionIntensity = 0.0f;
 		bool					m_isLighting = false;
+		bool					m_isTwoSided = true;
 
 		EffekseerRenderer::StandardRenderer<RendererImplemented, Shader, Vertex, VertexDistortion>*	m_standardRenderer = nullptr;
 	public:
@@ -445,6 +446,7 @@ namespace EffekseerRendererUE4
 		void SetTextures(Shader* shader, Effekseer::TextureData** textures, int32_t count);
 		void SetIsLighting(bool value) { m_isLighting = value; }
 		void SetIsDistorting(bool value) { m_isDistorting = value; }
+		void SetIsTwoSided(bool value) { m_isTwoSided = value; }
 		void SetDistortionIntensity(float value) { m_distortionIntensity = value; }
 
 		void SetLocalToWorld(FMatrix localToWorld);

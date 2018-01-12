@@ -1459,6 +1459,7 @@ struct EffectBasicRenderParameter
 struct EffectModelParameter
 {
 	bool				Lighting;
+	bool				TwoSided;
 };
 
 /**
