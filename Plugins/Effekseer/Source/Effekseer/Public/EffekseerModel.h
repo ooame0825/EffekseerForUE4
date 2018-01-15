@@ -11,6 +11,7 @@ struct FEffekseerModelMesh
 	TArray<FVector>	Binormal;
 	TArray<FVector>	Tangent;
 	TArray<FVector2D>	UV;
+	TArray<FColor>	Color;
 
 	TArray<int>		Indexes;
 };

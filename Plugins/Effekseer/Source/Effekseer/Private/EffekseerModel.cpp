@@ -49,6 +49,7 @@ FEffekseerModelMesh UEffekseerModel::GetMesh()
 		mesh.Binormal.Add(FVector(v.Binormal.X, v.Binormal.Z, v.Binormal.Y));
 		mesh.Tangent.Add(FVector(v.Tangent.X, v.Tangent.Z, v.Tangent.Y));
 		mesh.UV.Add(FVector2D(v.UV.X, v.UV.Y));
+		mesh.Color.Add(FColor(v.VColor.R, v.VColor.G, v.VColor.B, v.VColor.A));
 	}
 
 	for (auto i = 0; i < p->GetFaceCount(); i++)

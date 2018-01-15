@@ -86,6 +86,7 @@ UObject* UEffekseerModelFactory::FactoryCreateBinary(
 			rawMesh.WedgeTangentX.Add(mesh.Binormal[ind]);
 			rawMesh.WedgeTangentY.Add(mesh.Tangent[ind]);
 			rawMesh.WedgeTangentZ.Add(mesh.Normal[ind]);
+			rawMesh.WedgeColors.Add(mesh.Color[ind]);
 			rawMesh.WedgeTexCoords[0].Add(FVector2D(mesh.UV[ind]));
 			rawMesh.WedgeTexCoords[1].Add(FVector2D(mesh.UV[ind]));
 		}
