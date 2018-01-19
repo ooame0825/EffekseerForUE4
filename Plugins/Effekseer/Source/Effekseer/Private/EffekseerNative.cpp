@@ -7258,6 +7258,11 @@ private:
 	*/
 	Manager* GetManager() const;
 
+	/**
+	@brief	テクスチャループの設定を行います
+	*/
+	void SetTextureAddressMode(EffectNode* node);
+
 public:
 	/**
 	@brief	設定取得
@@ -12358,6 +12363,51 @@ bool EffectImplemented::Reload( Manager* managers, int32_t managersCount, const 
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
+void EffectImplemented::SetTextureAddressMode(EffectNode* node)
+{
+	// テクスチャに設定
+	auto SetAtTexture = [](EffectNode* node, TextureWrapType loop_type, int tex_index)
+	{
+		auto texture = node->GetEffect()->GetColorImage(tex_index);
+		if (texture == nullptr)
+		{
+			return;
+		}
+
+		auto u_texture = ((UTexture2D*)texture->UserPtr);
+
+		switch (loop_type)
+		{
+		case TextureWrapType::Clamp:
+			u_texture->AddressX = TextureAddress::TA_Clamp;
+			u_texture->AddressY = TextureAddress::TA_Clamp;
+			break;
+
+		case TextureWrapType::Repeat:
+			u_texture->AddressX = TextureAddress::TA_Wrap;
+			u_texture->AddressY = TextureAddress::TA_Wrap;
+			break;
+		}
+
+		u_texture->RefreshSamplerStates();
+	};
+
+	// 再帰処理
+	for (int i = 0; i < node->GetChildrenCount(); i++)
+	{
+		SetTextureAddressMode(node->GetChild(i));
+	}
+
+	EffectBasicRenderParameter param = node->GetBasicRenderParameter();
+	if (param.ColorTextureIndex >= 0)
+	{
+		SetAtTexture(node, param.WrapType, param.ColorTextureIndex);
+	}
+}
+
+//----------------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------------
 void EffectImplemented::ReloadResources( const EFK_CHAR* materialPath )
 {
 	UnloadResources();
@@ -12377,68 +12427,7 @@ void EffectImplemented::ReloadResources( const EFK_CHAR* materialPath )
 				m_pImages[ind] = textureLoader->Load( fullPath, TextureType::Color );
 			}
 
-			auto SetupTextureLoop = [](EffectImplemented* effect)
-			{
-				// テクスチャに設定
-				auto SetAtTexture = [](EffectImplemented* effect, TextureWrapType loop_type, int tex_index)
-				{
-					auto texture = effect->GetColorImage(tex_index);
-					if (texture == nullptr)
-					{
-						return;
-					}
-					auto u_texture = ((UTexture2D*)texture->UserPtr);
-
-					switch (loop_type)
-					{
-					case TextureWrapType::Clamp:
-						u_texture->AddressX = TextureAddress::TA_Clamp;
-						u_texture->AddressY = TextureAddress::TA_Clamp;
-						break;
-
-					case TextureWrapType::Repeat:
-						u_texture->AddressX = TextureAddress::TA_Wrap;
-						u_texture->AddressY = TextureAddress::TA_Wrap;
-						break;
-					}
-
-					//u_texture->UpdateResource();
-					u_texture->RefreshSamplerStates();
-				};
-
-				//auto ScanAll = [](EffectNode* node)
-				//{
-				//	int chiled_num = node->GetChildrenCount();
-
-				//	for (int i = 0; i < chiled_num; i++)
-				//	{
-				//		ScanAll(node->GetChild(i));
-				//	}
-				//};
-
-				// [TODO]子ノードのパラメータを取得後なんやかんやする処理を書く
-				for (int ri = 0; ri < effect->m_pRoot->GetChildrenCount(); ri++)
-				{
-					EffectNode* node = effect->m_pRoot->GetChild(ri);
-
-					for (int ni = 0; ni < node->GetChildrenCount(); ni++)
-					{
-						EffectBasicRenderParameter param = node->GetChild(ni)->GetBasicRenderParameter();
-						if (param.ColorTextureIndex >= 0)
-						{
-							SetAtTexture(effect, param.WrapType, param.ColorTextureIndex);
-						}
-					}
-
-					EffectBasicRenderParameter param = node->GetBasicRenderParameter();
-					if (param.ColorTextureIndex >= 0)
-					{
-						SetAtTexture(effect, param.WrapType, param.ColorTextureIndex);
-					}
-				}
-			};
-
-			SetupTextureLoop(this);
+			SetTextureAddressMode(m_pRoot);
 		}
 	}
 
