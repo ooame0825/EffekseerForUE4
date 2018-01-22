@@ -619,12 +619,6 @@ namespace EffekseerRendererUE4
 		UMaterialInstanceDynamic* mat = FindMaterial();
 		if (mat == nullptr) return;
 
-		//mat->BasePropertyOverrides.bOverride_TwoSided = true;
-		//mat->BasePropertyOverrides.TwoSided = 1;
-		//mat->UpdateOverridableBaseProperties();
-
-		bool a = mat->Parent->IsTwoSided();
-
 		if (renderData->LODResources.Num() == 0) return;
 		const auto& lodResource = renderData->LODResources[0];
 
